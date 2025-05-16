@@ -392,7 +392,7 @@ local Window = Parvus.Utilities.UI:Window({
             VehSection:Slider({Name = "Max Speed", Flag = "AR2/Vehicle/MaxSpeed", Min = 0, Max = 500, Value = 100, Unit = "mph"})
         end
         local CharSection = MiscTab:Section({Name = "Character", Side = "Right"}) do
-            CharSection:Toggle({Name = "Infinite Jump", Flag = "AR2/JumpHeight/NoFallCheck", Value = false})
+            -- CharSection:Toggle({Name = "Infinite Jump", Flag = "AR2/JumpHeight/NoFallCheck", Value = false})
             CharSection:Toggle({Name = "No Fall Impact", Flag = "AR2/NoFallImpact", Value = false})
             CharSection:Toggle({Name = "No Jump Debounce", Flag = "AR2/NoJumpDebounce", Value = false})
             CharSection:Slider({Name = "", Flag = "AR2/JumpHeight/Height", Min = 4.8, Max = 100, Precise = 1, Value = 4.8, Unit = "studs", Wide = true})
