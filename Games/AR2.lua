@@ -1,10 +1,9 @@
-local ReplicatedStorage = game:GetService("ReplicatedStorage")
-local CollectionService = game:GetService("CollectionService")
-local UserInputService = game:GetService("UserInputService")
-local ReplicatedFirst = game:GetService("ReplicatedFirst")
-local RunService = game:GetService("RunService")
-local PlayerService = game:GetService("Players")
-local Workspace = game:GetService("Workspace")
+local ReplicatedStorage: ReplicatedStorage = cloneref(game:GetService("ReplicatedStorage"))
+local CollectionService: CollectionService = cloneref(game:GetService("CollectionService"))
+local UserInputService: UserInputService = cloneref(game:GetService("UserInputService"))
+local ReplicatedFirst: ReplicatedFirst = cloneref(game:GetService("ReplicatedFirst"))
+local PlayerService: Players = cloneref(game:GetService("Players"))
+local Workspace: Workspace = cloneref(game:GetService("Workspace"))
 
 task.spawn(function()
     for _, Connection in next, getconnections(game:GetService("ScriptContext").Error) do
@@ -32,13 +31,10 @@ repeat task.wait() until Framework.Classes.Players.get()
 local PlayerClass = Framework.Classes.Players.get()
 
 local Globals = Framework.Configs.Globals
-local World = Framework.Libraries.World
 local Network = Framework.Libraries.Network
 local Cameras = Framework.Libraries.Cameras
 local Bullets = Framework.Libraries.Bullets
-local Lighting = Framework.Libraries.Lighting
 local Interface = Framework.Libraries.Interface
-local Resources = Framework.Libraries.Resources
 local Raycasting = Framework.Libraries.Raycasting
 
 local Maids = Framework.Classes.Maids
@@ -50,10 +46,8 @@ local CharacterCamera = Cameras:GetCamera("Character")
 
 local Events = getupvalue(Network.Add, 1)
 local GetSpreadAngle = getupvalue(Bullets.Fire, 1)
-local GetSpreadVector = getupvalue(Bullets.Fire, 3)
 local CastLocalBullet = getupvalue(Bullets.Fire, 4)
 local GetFireImpulse = getupvalue(Bullets.Fire, 6)
-local LightingState = getupvalue(Lighting.GetState, 1)
 local AnimatedReload = getupvalue(Firearm, 7)
 
 local SetWheelSpeeds = getupvalue(VehicleController.Step, 2)
@@ -72,16 +66,11 @@ for Index, Table in pairs(getgc(true)) do
 end
 
 local ProjectileSpeed = 1000
-local ProjectileOrigin = Vector3.new(0, 0, 0)
 local ProjectileDirection = Vector3.new(0, 0, 0)
-local ProjectileSpread = Vector3.new(0, 0, 0)
 local ShotMaxDistance = Globals.ShotMaxDistance
 local ProjectileGravity = Globals.ProjectileGravity
 
 local SquadData = nil
-local GroundPart = Instance.new("Part")
-local OldBaseTime = LightingState.BaseTime
-local NoClipObjects, NoClipEvent = {}, nil
 
 local AddObject = Instance.new("BindableEvent")
 AddObject.Event:Connect(function(...)
@@ -93,12 +82,6 @@ RemoveObject.Event:Connect(function(...)
     Parvus.Utilities.Drawing:RemoveObject(...)
 end)
 
---RenderSettings.Loot = 1
---RenderSettings.Elements = 1
---RenderSettings.Detail = -1
---RenderSettings.Terrain = 36
-
--- game data mess
 local RandomEvents, ItemCategory, ZombieInherits, SanityBans, AdminRoles = {
     {"ATVCrashsiteRenegade01", false},
     {"BankTruckRobbery01", false},
@@ -269,7 +252,6 @@ local Window = Parvus.Utilities.UI:Window({
             TriggerSection:Toggle({Name = "Hold Mouse Button", Flag = "Trigger/HoldMouseButton", Value = false})
             TriggerSection:Toggle({Name = "Prediction", Flag = "Trigger/Prediction", Value = true})
 
-            --TriggerSection:Toggle({Name = "Team Check", Flag = "Trigger/TeamCheck", Value = false})
             TriggerSection:Toggle({Name = "Distance Check", Flag = "Trigger/DistanceCheck", Value = false})
             TriggerSection:Toggle({Name = "Visibility Check", Flag = "Trigger/VisibilityCheck", Value = false})
 
@@ -392,7 +374,6 @@ local Window = Parvus.Utilities.UI:Window({
             VehSection:Slider({Name = "Max Speed", Flag = "AR2/Vehicle/MaxSpeed", Min = 0, Max = 500, Value = 100, Unit = "mph"})
         end
         local CharSection = MiscTab:Section({Name = "Character", Side = "Right"}) do
-            -- CharSection:Toggle({Name = "Infinite Jump", Flag = "AR2/JumpHeight/NoFallCheck", Value = false})
             CharSection:Toggle({Name = "No Fall Impact", Flag = "AR2/NoFallImpact", Value = false})
             CharSection:Toggle({Name = "No Jump Debounce", Flag = "AR2/NoJumpDebounce", Value = false})
             CharSection:Slider({Name = "", Flag = "AR2/JumpHeight/Height", Min = 4.8, Max = 100, Precise = 1, Value = 4.8, Unit = "studs", Wide = true})
@@ -447,13 +428,12 @@ Parvus.Utilities.Drawing.SetupFOV("Aimbot", Window.Flags)
 Parvus.Utilities.Drawing.SetupFOV("Trigger", Window.Flags)
 Parvus.Utilities.Drawing.SetupFOV("SilentAim", Window.Flags)
 
-local XZVector = Vector3.new(1, 0, 1)
 local WallCheckParams = RaycastParams.new()
 WallCheckParams.FilterType = Enum.RaycastFilterType.Blacklist
 WallCheckParams.FilterDescendantsInstances = {
     Workspace.Effects, Workspace.Sounds,
     Workspace.Locations, Workspace.Spawns
-} WallCheckParams.IgnoreWater = true
+}; WallCheckParams.IgnoreWater = true
 
 local function Raycast(Origin, Direction)
     if not table.find(WallCheckParams.FilterDescendantsInstances, LocalPlayer.Character) then
@@ -461,7 +441,7 @@ local function Raycast(Origin, Direction)
             Workspace.Effects, Workspace.Sounds,
             Workspace.Locations, Workspace.Spawns,
             LocalPlayer.Character
-        } --print("added character to raycast")
+        }
     end
 
     local RaycastResult = Workspace:Raycast(Origin, Direction, WallCheckParams)
@@ -506,11 +486,6 @@ local function GetClosest(Enabled,
 
     if not Enabled then return end
     if not PlayerClass.Character then return end
-    --[[local Weapon = PlayerClass.Character.Instance.Equipped:FindFirstChildOfClass("Model")
-    if not Weapon then return end
-
-    local Muzzle = Weapon:FindFirstChild("Muzzle")
-    if not Muzzle then return end]]
 
     local CameraPosition, Closest = Camera.CFrame.Position, nil
     for Index, Player in ipairs(PlayerService:GetPlayers()) do
@@ -617,81 +592,6 @@ local function CheckForAdmin(Player)
         end
     end
 end
-
---[[local function CastLocalBulletInstant(Origin, SpreadDirection, Direction)
-    local Velocity = Direction * ProjectileSpeed
-    local SpreadVelocity = SpreadDirection * ProjectileSpeed
-
-    local ProjectilePosition = Origin
-    local ProjectileSpreadPosition = Origin
-
-    local ProjectileRay = nil
-    local ProjectileCastInstance = nil
-    local ProjectileCastPosition = Vector3.zero
-
-    local ProjectileSpreadRay = nil
-    local ProjectileSpreadCastInstance = nil
-    local ProjectileSpreadCastPosition = Vector3.zero
-
-    local Exclude = {
-        Effects,
-        Sounds,
-        PlayerClass.Character.Instance
-    }
-
-    local Frame = 1 / 60
-    local TravelTime = 0
-    local Traveling = true
-    local TravelDistance = 0
-    local SpreadTravelDistance = 0
-
-    while Traveling do
-        TravelTime += Frame
-
-        ProjectileRay = Ray.new(ProjectilePosition, Origin + Velocity * TravelTime + ProjectileGravity * Vector3.yAxis * TravelTime ^ 2 - ProjectilePosition)
-        ProjectileSpreadRay = Ray.new(ProjectileSpreadPosition, Origin + SpreadVelocity * TravelTime + ProjectileGravity * Vector3.yAxis * TravelTime ^ 2 - ProjectileSpreadPosition)
-
-        ProjectileCastInstance, ProjectileCastPosition = Raycasting:BulletCast(ProjectileRay, true, Exclude)
-        ProjectileSpreadCastInstance, ProjectileSpreadCastPosition = Raycasting:BulletCast(ProjectileSpreadRay, true, Exclude)
-
-        TravelDistance = TravelDistance + (ProjectilePosition - ProjectileCastPosition).Magnitude
-        SpreadTravelDistance = SpreadTravelDistance + (ProjectileSpreadPosition - ProjectileSpreadCastPosition).Magnitude
-
-        ProjectilePosition = ProjectileCastPosition
-        ProjectileSpreadPosition = ProjectileSpreadCastPosition
-
-        if ProjectileCastInstance or ShotMaxDistance < TravelDistance then
-            Traveling = false
-            break
-        end
-    end
-
-    if ProjectileCastInstance then
-        if (ProjectileSpreadCastPosition - ProjectileCastPosition).Magnitude > 5 then
-            ProjectileSpreadCastPosition = ProjectileSpreadCastPosition - ((ProjectileSpreadRay.Origin - ProjectileSpreadCastPosition).Unit * -(ProjectileCastInstance.Position - ProjectileSpreadCastPosition).Magnitude)
-        end
-
-        return ProjectileSpreadCastPosition, {
-            ProjectileCastInstance.CFrame:PointToObjectSpace(ProjectileSpreadRay.Origin),
-            ProjectileCastInstance.CFrame:VectorToObjectSpace(ProjectileSpreadRay.Direction),
-            ProjectileCastInstance.CFrame:PointToObjectSpace(ProjectileSpreadCastPosition)
-        }
-    end
-end]]
-
---[[local function BulletCast(ProjectileRay, Include)
-    local Params = RaycastParams.new()
-    Params.FilterDescendantsInstances = Include
-    Params.FilterType = Enum.RaycastFilterType.Include
-
-    local Raycast = workspace:Raycast(ProjectileRay.Origin, ProjectileRay.Direction, Params)
-
-    if Raycast then
-        return Raycast.Instance, Raycast.Position, Raycast.Normal, Raycast.Material
-    end
-
-    return nil, ProjectileRay.Origin + ProjectileRay.Direction, Vector3.yAxis, Enum.Material.Air
-end]]
 
 local function CastLocalBulletInstant(Origin, Direction, SpreadDirection)
     local Velocity = Direction * ProjectileSpeed
@@ -1158,39 +1058,11 @@ local OldPlayAnimation; OldPlayAnimation = hookfunction(Animators.PlayAnimation,
     if Path == "Actions.Fall Impact" and Window.Flags["AR2/NoFallImpact"] then return end
     return OldPlayAnimation(Self, Path, ...)
 end))
-local OldSquadUpdate; OldSquadUpdate = hookfunction(Events["Squad Update"], newcclosure(function(Data, ...)
-    SquadData = Data
-    --print(repr(SquadData))
-    --print("Squad Updated")
-    return OldSquadUpdate(Data, ...)
-end))
--- local OldICA; OldICA = hookfunction(Events["Inventory Container Added"], newcclosure(function(Id, Data, ...)
---     if not Window.Flags["AR2/ESP/Items/Containers/Enabled"] then return OldICA(Id, Data, ...) end
 
---     --print(Data.Type)
-
---     if Data.Type ~= "Corpse" or Data.Type ~= "Vehicle" then
---         if Data.WorldPosition and Length(Data.Occupants) > 0 then
---             AddObject:Fire(Data.Id, CIIC(Data), Data.WorldPosition,
---             "AR2/ESP/Items", "AR2/ESP/Items/Containers", Window.Flags)
---         end
---     end
-
---     return OldICA(Id, Data, ...)
--- end))
--- local OldCC; OldCC = hookfunction(Events["Container Changed"], newcclosure(function(Data, ...)
---     if not Window.Flags["AR2/ESP/Items/Containers/Enabled"] then return OldCC(Data, ...) end
-
---     RemoveObject:Fire(Data.Id)
-
---     if Data.Type ~= "Corpse" or Data.Type ~= "Vehicle" then
---         if Data.WorldPosition and Length(Data.Occupants) > 0 then
---             AddObject:Fire(Data.Id, CIIC(Data), Data.WorldPosition,
---             "AR2/ESP/Items", "AR2/ESP/Items/Containers", Window.Flags)
---         end
---     end
-
---     return OldCC(Data, ...)
+-- TODO: incorperate teamcheck, ik how 2 do it im just extremely lazy lol
+-- local OldSquadUpdate; OldSquadUpdate = hookfunction(Events["Squad Update"], newcclosure(function(Data, ...)
+--     SquadData = Data
+--     return OldSquadUpdate(Data, ...)
 -- end))
 
 if PlayerClass.Character then
@@ -1269,25 +1141,6 @@ Parvus.Utilities.NewThreadLoop(0, function()
     end mouse1release()
 end)
 
--- Parvus.Utilities.NewThreadLoop(0, function(Delta)
---     if not Window.Flags["AR2/WalkSpeed/Enabled"] then return end
-
---     if not PlayerClass.Character then return end
---     local RootPart = PlayerClass.Character.RootPart
---     local MoveDirection = Parvus.Utilities.MovementToDirection() * XZVector
-
---     RootPart.CFrame += MoveDirection * Delta * Window.Flags["AR2/WalkSpeed/Speed"] * 100
--- end)
--- Parvus.Utilities.NewThreadLoop(0, function(Delta)
---     if not Window.Flags["AR2/Fly/Enabled"] then return end
-
---     if not PlayerClass.Character then return end
---     local RootPart = PlayerClass.Character.RootPart
---     local MoveDirection = Parvus.Utilities.MovementToDirection()
-
---     RootPart.AssemblyLinearVelocity = Vector3.zero
---     RootPart.CFrame += MoveDirection * (Window.Flags["AR2/Fly/Speed"] * (Delta * 60))
--- end)
 Parvus.Utilities.NewThreadLoop(0.1, function()
     if not Window.Flags["AR2/MeleeAura"]
     and not Window.Flags["AR2/AntiZombie/MeleeAura"] then return end
@@ -1314,42 +1167,11 @@ Parvus.Utilities.NewThreadLoop(1, function()
         Head.CanCollide = true
     end
 end)
--- Parvus.Utilities.NewThreadLoop(0.5, function()
---     if not Window.Flags["AR2/Lighting/Enabled"] then return end
---     local Time = LightingState.StartTime + Workspace:GetServerTimeNow()
---     LightingState.BaseTime = Time + ((Window.Flags["AR2/Lighting/Time"] * (86400 / LightingState.CycleLength)) % 1440)
---     --print(LightingState.StartTime, LightingState.CycleLength, LightingState.BaseTime)
--- end)
--- Parvus.Utilities.NewThreadLoop(1, function()
---     if not Window.Flags["AR2/ESP/Items/Enabled"]
---     and not Window.Flags["AR2/ESP/Items/Containers/Enabled"] then return end
-
---     local Items = GetItemsInRadius(100)
-
---     if not PlayerClass.Character
---     or Interface:IsVisible("GameMenu")
---     or #Items == 0 then return end
-
---     for Index, Item in pairs(Items) do
---         if Interface:IsVisible("GameMenu")
---         or table.find(ItemMemory, Item) then continue end
-
---         task.spawn(function()
---             if Network:Fetch("Inventory Container Group Connect", Item) then
---                 Network:Send("Inventory Container Group Disconnect")
---                 table.insert(ItemMemory, Item)
---                 local Pos = #ItemMemory
---                 task.wait(30)
---                 table.remove(ItemMemory, Pos)
---             end
---         end)
---     end
--- end)
 
 for Index, Item in pairs(Loot:GetDescendants()) do
     if Item:IsA("CFrameValue") then
         local ItemData = ReplicatedStorage.ItemData:FindFirstChild(Item.Name, true)
-        if not ItemData then continue end --print(ItemData.Parent.Name)
+        if not ItemData then continue end 
 
         Parvus.Utilities.Drawing:AddObject(Item, Item.Name, Item.Value.Position,
             "AR2/ESP/Items", "AR2/ESP/Items/" .. ItemData.Parent.Name, Window.Flags
@@ -1358,7 +1180,7 @@ for Index, Item in pairs(Loot:GetDescendants()) do
 end
 for Index, Event in pairs(Randoms:GetChildren()) do
     for Index, Data in pairs(RandomEvents) do
-        if Event.Name ~= Data[1] then continue end --print(Event.Name)
+        if Event.Name ~= Data[1] then continue end 
         Parvus.Utilities.Drawing:AddObject(Event, Event.Name, Event.Value.Position,
             "AR2/ESP/RandomEvents", "AR2/ESP/RandomEvents/" .. Event.Name, Window.Flags
         )
