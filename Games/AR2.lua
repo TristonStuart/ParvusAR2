@@ -431,8 +431,8 @@ Parvus.Utilities.Drawing.SetupFOV("SilentAim", Window.Flags)
 local WallCheckParams = RaycastParams.new()
 WallCheckParams.FilterType = Enum.RaycastFilterType.Blacklist
 WallCheckParams.FilterDescendantsInstances = {
-    Workspace.Effects, Workspace.Sounds,
-    Workspace.Locations, Workspace.Spawns
+    Workspace.Effects, ReplicatedStorage.Assets.Sounds --[[Workspace.Sounds]],
+    --[[,Workspace.Locations, Workspace.Spawns]]
 }; WallCheckParams.IgnoreWater = true
 
 local function Raycast(Origin, Direction)
