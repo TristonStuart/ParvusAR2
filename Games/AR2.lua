@@ -16,9 +16,9 @@ local LocalPlayer = PlayerService.LocalPlayer
 local Aimbot, SilentAim, Trigger = false, nil, nil
 
 local Mannequin = ReplicatedStorage.Assets.Mannequin
-local LootBins = Workspace.Map.Shared.LootBins
-local Randoms = Workspace.Map.Shared.Randoms
-local Vehicles = Workspace.Vehicles.Spawned
+--local LootBins = Workspace.Map.Shared.LootBins
+--local Randoms = Workspace.Map.Shared.Randoms
+local Vehicles = Workspace.Vehicles --local Vehicles = Workspace.Vehicles.Spawned
 local Characters = Workspace.Characters
 local Corpses = Workspace.Corpses
 local Zombies = Workspace.Zombies
