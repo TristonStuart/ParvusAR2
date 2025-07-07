@@ -730,7 +730,7 @@ end
 local function GetItemsInRadius(Distance)
     local Closest = {}
 
-    for Index, Item in pairs(LootBins:GetChildren()) do
+    --[[for Index, Item in pairs(LootBins:GetChildren()) do
         for Index, Group in pairs(Item:GetChildren()) do
             local Part = Group:FindFirstChild("Part")
             if not Part then continue end
@@ -738,7 +738,7 @@ local function GetItemsInRadius(Distance)
             local Magnitude = (Part.Position - Camera.CFrame.Position).Magnitude
             if Distance >= Magnitude then table.insert(Closest, Group) end
         end
-    end
+    end]] -- Needs Updating
 
     return Closest
 end
@@ -1178,14 +1178,14 @@ for Index, Item in pairs(Loot:GetDescendants()) do
         )
     end
 end
-for Index, Event in pairs(Randoms:GetChildren()) do
+--[[for Index, Event in pairs(Randoms:GetChildren()) do
     for Index, Data in pairs(RandomEvents) do
         if Event.Name ~= Data[1] then continue end 
         Parvus.Utilities.Drawing:AddObject(Event, Event.Name, Event.Value.Position,
             "AR2/ESP/RandomEvents", "AR2/ESP/RandomEvents/" .. Event.Name, Window.Flags
         )
     end
-end
+end]] -- Needs Updating
 for Index, Corpse in pairs(Corpses:GetChildren()) do
     if Corpse.Name == "Zombie" then continue end
     if not Corpse.PrimaryPart then continue end
