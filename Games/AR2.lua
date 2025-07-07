@@ -1013,7 +1013,7 @@ setupvalue(Firearm, 7, function(...)
 
     return AnimatedReload(...)
 end)
-setupvalue(InteractHeartbeat, 11, function(...)
+--[[setupvalue(InteractHeartbeat, 11, function(...)
     if Window.Flags["AR2/InstantSearch"] then
         local ReturnArgs = {FindItemData(...)}
         if ReturnArgs[4] then ReturnArgs[4] = 0 end
@@ -1022,7 +1022,7 @@ setupvalue(InteractHeartbeat, 11, function(...)
     end
 
     return FindItemData(...)
-end)
+end)]] -- Not Working
 
 local OldFire; OldFire = hookfunction(Bullets.Fire, newcclosure(function(Self, ...)
     if SilentAim and math.random(100) <= Window.Flags["SilentAim/HitChance"] then
