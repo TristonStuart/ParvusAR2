@@ -22,7 +22,7 @@ local Vehicles = Workspace.Vehicles --local Vehicles = Workspace.Vehicles.Spawne
 local Characters = Workspace.Characters
 local Corpses = Workspace.Corpses
 local Zombies = Workspace.Zombies
-local Loot = Workspace.Loot
+local Loot = ReplicatedStorage.Globals.Loot --Workspace.Loot
 
 local Framework = require(ReplicatedFirst:WaitForChild("Framework"))
 Framework:WaitForLoaded()
