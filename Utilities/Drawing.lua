@@ -223,11 +223,11 @@ if game.GameId == 1168263273 or game.GameId == 3360073263 then -- Bad Business
 elseif game.GameId == 358276974 or game.GameId == 3495983524 then -- Apocalypse Rising 2
     function GetHealth(Target, Character, Mode)
         return 1 -- Bypass broken health stats
-        local Health = Target.Stats.Health
+        --[[local Health = Target.Stats.Health
         local Bonus = Target.Stats.HealthBonus
 
         return Health.Value + Bonus.Value,
-        100 + Bonus.Value, Health.Value > 0
+        100 + Bonus.Value, Health.Value > 0]]
     end
 
     function GetWeapon(Target, Character, Mode)
